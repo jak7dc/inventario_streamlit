@@ -18,11 +18,3 @@ class Conexion():
 
 
 cnn = Conexion()
-
-# cnn.cursor.execute("SELECT * from categoria;")
-# data = cnn.cursor.fetchall()
-# print(data)
-# # cnn.cursor.execute("SELECT version();")
-# # data = cnn.cursor.fetchone()  
-# # print("Conectado a la base de datos:", data)
-
