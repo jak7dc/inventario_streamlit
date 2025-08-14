@@ -48,36 +48,39 @@ def ver_productos():
 
     df = pd.DataFrame(data, columns=['ID', 'Referencia', 'Nombre','Id categoria', 'Categoria', 'Unidades', 'Peso', 'Unidad Medida'])
 
-    col1, col2, col3, col4, col5, col6, col7, col8 = st.columns([1, 1, 3, 1, 3, 2, 2, 3])
-    with col1:
+    hd1, hd2, hd3, hd4, hd5, hd6 ,hd7 = st.columns([1, 1, 3, 3, 2, 2, 3])
+
+    with hd1:
         st.write("ID")
-    with col2:
+    with hd2:
         st.write("Referencia")
-    with col3:
+    with hd3:
         st.write("Nombre")
-    with col5:
+    with hd4:
         st.write("Categoria")
-    with col6:
+    with hd5:
         st.write("Unidades")
-    with col7:
+    with hd6:
         st.write("Peso")
-    with col8:
+    with hd7:
         st.write("Acciones")
 
     for index, row in df.iterrows():
+        col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 3, 3, 2, 2, 3])
+        
         with col1:
             st.write(row['ID']) 
         with col2:
             st.write(row['Referencia'])
         with col3:
             st.write(row['Nombre'])
-        with col5:
+        with col4:
             st.write(row['Categoria'])
-        with col6:
+        with col5:
             st.write(row['Unidades'])
-        with col7:
+        with col6:
             st.write(row['Peso'])
-        with col8:
+        with col7:
             subcol1, subcol2 = st.columns(2)
             with subcol1:
                 if st.button("Editar", key=f"editar_{row['ID']}"):
@@ -85,18 +88,31 @@ def ver_productos():
             with subcol2:
                 if st.button("Eliminar", key=f"eliminar_{row['ID']}"):
                     st.success(f"Producto {row['Nombre']} eliminado exitosamente.")
-    
+        
     
 
 def insertar_producto():
     with st.form("insertar_producto_form"):
         st.write("Formulario para insertar productos...")
-        nombre = st.text_input("Nombre del Producto")
-        categoria = st.number_input("Categoria", min_value=0, step=1)
-        unMedida = st.selectbox("Unidad de Medida", ["kilogramo", "gramo", "litro", "mili litro", "galón", "cuñete" , "unidad"])
+        nombre_producto = st.text_input("Nombre del Producto")
+        id_categoria = st.number_input("Categoria", min_value=0, step=1)
+        unMedida_producto = st.selectbox("Unidad de Medida", ["kilogramo", "gramo", "litro", "mili litro", "galón", "cuñete" , "unidad"])
         
         
         if st.form_submit_button("Guardar Producto"):
-            st.success(f"Producto '{nombre}'guardado exitosamente.")
+            conn = Conexion()
+            conn.cursor.execute(
+                """
+            INSERT INTO producto (id_producto, referencia_producto, nombre_producto, unidades_producto, 
+					            peso_producto, unmedida_producto, id_categoria)
+			            values(
+			                    (select (coalesce(max(id_producto)) + 1) from producto)	
+			                    ,'PR' || CAST((select (coalesce(max(id_producto)) + 1) from producto) as text),
+			                    %s, 0, 0, %s, %s)
+                """,(nombre_producto, unMedida_producto, id_categoria)
+            )
+            conn.conexion.commit()
+            conn.cerrar()
+            st.success(f"Producto '{nombre_producto}'guardado exitosamente.")
             st.session_state.pagina_productos = "Productos"
         

@@ -50,18 +50,18 @@ def editar_categoria():
 def insertar_categoria():
     with st.form("insertar_categoria_form"):
         st.write("Formulario para insertar categoria...")
-        nombre_producto = st.text_input("Nombre de la categoria")
-        precio_producto = st.text_area("Descripcion de la categoria")
+        nombre_categoria = st.text_input("Nombre de la categoria")
+        descripcion_categoria = st.text_area("Descripcion de la categoria")
         
         if st.form_submit_button("Guardar Categoria"):
             conn = Conexion()
             conn.cursor.execute(
                 "INSERT INTO categoria (nombre_categoria, descripcion_categoria) VALUES (%s, %s)",
-                (nombre_producto, precio_producto)
+                (nombre_categoria, descripcion_categoria)
             )
             conn.conexion.commit()
             conn.cerrar()
-            st.success(f"Producto '{nombre_producto}' con precio {precio_producto} guardado exitosamente.")
+            st.success(f"Producto '{nombre_categoria}' con precio {descripcion_categoria} guardado exitosamente.")
             st.session_state.pagina_categorias = "Ver"
         
 def ver_categorias():
