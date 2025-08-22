@@ -1,8 +1,14 @@
 import psycopg2 as pg
 
 
+
 class Conexion():
   def __init__(self):
+    self.conexion = None
+    self.cursor = None
+    self.conectar()
+
+  def conectar(self):
     self.conexion = pg.connect(
       host="localhost",
       database="termifast",
